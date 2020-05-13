@@ -7,17 +7,19 @@ import (
 	"time"
 
 	"context"
+
 	"google.golang.org/grpc"
 )
+
 const (
-	address = "localhost:8888"
+	address     = "localhost:8888"
 	defaultName = "world"
 )
 
-func main(){
-	conn,err := grpc.Dial(address,grpc.WithInsecure(),grpc.WithBlock())
+func main() {
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("failed to connect: %v",err)
+		log.Fatalf("failed to connect: %v", err)
 	}
 	defer conn.Close()
 	c := pb.NewGreeterClient(conn)
@@ -26,11 +28,11 @@ func main(){
 	if len(os.Args) > 1 {
 		name = os.Args[1:]
 	}
-	ctx,cancel :=context.WithTimeout(context.Background(),time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r,err := c.SayHello(ctx,&pb.HelloRequest{Name:name})
+	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("could not greet: %v",err)
+		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %s",r.GetMessage())
+	log.Printf("Greeting: %s", r.GetMessage())
 }
